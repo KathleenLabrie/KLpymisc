@@ -56,4 +56,5 @@ target/
 # PyDev
 .project
 .pydevproject
+.settings
 
