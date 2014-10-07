@@ -1,0 +1,6 @@
+include ReleaseNote
+include INSTALL
+include LICENSE
+include README
+include README.md
+include DESCRIPTION.rst
