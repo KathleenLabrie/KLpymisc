@@ -1,4 +1,4 @@
 KLpymisc
 ========
 
-Various admin or misc tools necessarily related to science or astronomy.
+Various admin or misc tools not necessarily related to science or astronomy.
