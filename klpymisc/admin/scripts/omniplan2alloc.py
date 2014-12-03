@@ -111,7 +111,7 @@ def write_allocations(allocations, outputfile):
     
     # For each allocation, create row, use ordered datetime.date
     alloc_rows = []
-    for resource in allocations:
+    for resource in sorted(allocations.keys()):
         row = []
         row.append(allocations[resource].resource)
         for month in list_of_months:
@@ -269,7 +269,7 @@ def main(argv=None):
             
     allocations = calculate_allocation(records)
     if args.debug:
-        for resource in allocations:
+        for resource in sorted(allocations.keys()):
             print allocations[resource].resource
             for month in allocations[resource].allocation:
                 print '   ', month.strftime("%B%Y"), allocations[resource].allocation[month]

@@ -59,7 +59,8 @@ setup(
       data_files = DATA_FILES,
       
       scripts = [
-                 'klpymisc/admin/scripts/omniplan2alloc.py'
+                 'klpymisc/admin/scripts/omniplan2alloc.py',
+                 'klpymisc/admin/scripts/towebtimesheet.py'
                  ],
       
       zip_safe = False,
