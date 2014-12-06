@@ -7,8 +7,9 @@ import csv
 import re
 from datetime import date, datetime, timedelta
 import calendar
+from dateutil import rrule
 
-VERSION = '1.0.0'
+VERSION = '1.1.0'
 
 COMPAT = 'CSV from OmniPlan 2.3.5'
 
@@ -51,7 +52,7 @@ def calculate_allocation(records):
             effort_hours = parse_effort(record.record['Effort'])
             start_date = parse_date(record.record['Start'])
             end_date = parse_date(record.record['End'])
-            
+                        
             # Now, calculate the effort per month
             if start_date.month == end_date.month:
                 # Effort contained within one month.
@@ -62,12 +63,23 @@ def calculate_allocation(records):
                 # Effort spread over multiple months
                 
                 # Effort in partial months (first and last)
-                ndays = abs(end_date - start_date).days + 1
+                # (All 'number of days' are business days.)
+                ndays = get_business_days(start_date, end_date)
                 effort_per_day = effort_hours / ndays
-                days_in_first = calendar.monthrange(start_date.year, 
-                                                    start_date.month)[1] \
-                                - start_date.day + 1
-                days_in_last = end_date.day
+                
+                last_date_in_first_month = date(start_date.year, 
+                                                start_date.month,
+                                                calendar.monthrange(start_date.year, 
+                                                    start_date.month)[1]
+                                                )
+                days_in_first = get_business_days(start_date, last_date_in_first_month)
+                
+                first_date_in_last_month = date(end_date.year,
+                                                end_date.month,
+                                                1
+                                                )
+                days_in_last = get_business_days(first_date_in_last_month, end_date)
+                
                 first_month = date(start_date.year, start_date.month, 1)
                 last_month = date(end_date.year, end_date.month, 1)
                 for (name, frac) in resources:
@@ -80,7 +92,9 @@ def calculate_allocation(records):
                 list_of_months = monthly(start_date, end_date, 
                                          include_limits=False)
                 for month in list_of_months:
-                    days = calendar.monthrange(month.year, month.month)[1]
+                    days = get_business_days(date(month.year, month.month, 1),
+                                             date(month.year, month.month,
+                                                  calendar.monthrange(month.year, month.month)[1]))
                     for (name, frac) in resources:
                         allocations[name].add_effort(month, 
                                                 effort_per_day * days * frac)
@@ -168,6 +182,15 @@ class AllocRecord:
 #------------------------------------------------------------------
 # Utility functions
 
+def get_business_days(start_date, end_date):
+    """
+    inputs in date objects
+    """
+    bizdays = rrule.rrule(rrule.DAILY, byweekday=range(0,5), dtstart=start_date, until=end_date)
+    nbizdays = len(list(bizdays))
+    
+    return nbizdays
+
 def monthly(start, end, include_limits=True):
     one_month = timedelta(calendar.monthrange(start.year, start.month)[1])
     if include_limits:
@@ -201,7 +224,10 @@ def parse_assigned(assigned_string):
         (name, fracstring) = assignee.split('{',1)
         name = name.rstrip().lstrip()
         f_of_f = re.search('(\d+)\% of (\d+)\%', fracstring).groups()
-        fraction = float(f_of_f[0])*float(f_of_f[1]) / 10000.
+        # the omniplan string says eg. 80% of 80% but it means 80% FTE
+        #  not 80% of 0.8 FTE, or 64%.  The proof is that one cannot say
+        #  in omniplan to assign 100% of 80%. 
+        fraction = float(f_of_f[0]) / 10000.
         total_fraction += fraction
         resources.append([name, fraction])
     # fraction is global, but we want fraction of this task only

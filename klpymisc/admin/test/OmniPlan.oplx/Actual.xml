@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<scenario xmlns="http://www.omnigroup.com/namespace/OmniPlan/v2" id="nhmwqBfB2hq">
+  <start-date>2014-12-05T18:00:00.000Z</start-date>
+  <prototype-task>
+    <task id="t4294967294">
+      <title>Task 1</title>
+      <effort>28800</effort>
+    </task>
+  </prototype-task>
+  <prototype-task>
+    <task id="t4294967293">
+      <title>Milestone 1</title>
+      <type>milestone</type>
+    </task>
+  </prototype-task>
+  <prototype-task>
+    <task id="t4294967292">
+      <title>Group 1</title>
+      <type>group</type>
+    </task>
+  </prototype-task>
+  <prototype-resource>
+    <resource id="r4294967294">
+      <name>Resource 1</name>
+      <type>Staff</type>
+    </resource>
+  </prototype-resource>
+  <prototype-resource>
+    <resource id="r4294967293">
+      <name>Equipment 1</name>
+      <type>Equipment</type>
+    </resource>
+  </prototype-resource>
+  <prototype-resource>
+    <resource id="r4294967292">
+      <name>Material 1</name>
+      <type>Material</type>
+      <units-available>0</units-available>
+      <efficiency>0</efficiency>
+    </resource>
+  </prototype-resource>
+  <prototype-resource>
+    <resource id="r4294967291">
+      <name>Group 1</name>
+      <type>Group</type>
+    </resource>
+  </prototype-resource>
+  <top-resource idref="r-1"/>
+  <resource id="r-1">
+    <type>Group</type>
+    <child-resource idref="r1"/>
+    <child-resource idref="r2"/>
+    <child-resource idref="r3"/>
+    <child-resource idref="r4"/>
+  </resource>
+  <resource id="r1">
+    <name>A</name>
+    <type>Staff</type>
+    <units-available>0.599999964237213</units-available>
+  </resource>
+  <resource id="r2">
+    <name>B</name>
+    <type>Staff</type>
+    <units-available>0.799999952316284</units-available>
+  </resource>
+  <resource id="r3">
+    <name>C</name>
+    <type>Staff</type>
+    <units-available>0.599999964237213</units-available>
+  </resource>
+  <resource id="r4">
+    <name>D</name>
+    <type>Staff</type>
+    <units-available>0.599999964237213</units-available>
+  </resource>
+  <top-task idref="t-1"/>
+  <task id="t-1">
+    <type>group</type>
+    <child-task idref="t1"/>
+    <child-task idref="t2"/>
+    <child-task idref="t3"/>
+    <child-task idref="t4"/>
+    <child-task idref="t6"/>
+    <child-task idref="t7"/>
+  </task>
+  <task id="t1">
+    <title>Task 1</title>
+    <effort>288000</effort>
+    <assignment idref="r1" units="0.599999964237213"/>
+    <assignment idref="r4" units="0.299999982118607"/>
+  </task>
+  <task id="t2">
+    <title>Task 2</title>
+    <effort>288000</effort>
+    <assignment idref="r2" units="0.799999952316284"/>
+  </task>
+  <task id="t3">
+    <title>Task 3</title>
+    <effort>576000</effort>
+    <prerequisite-task idref="t2"/>
+    <assignment idref="r3" units="0.599999964237213"/>
+  </task>
+  <task id="t4">
+    <title>Task 4</title>
+    <effort>144000</effort>
+    <prerequisite-task idref="t3"/>
+    <assignment idref="r2" units="0.399999976158142"/>
+  </task>
+  <task id="t6">
+    <title>Task 5</title>
+    <effort>288000</effort>
+    <prerequisite-task idref="t4" kind="SS"/>
+    <assignment idref="r2" units="0.199999988079071"/>
+    <assignment idref="r4" units="0.599999964237213"/>
+  </task>
+  <task id="t7">
+    <title>Task 6</title>
+    <effort>288000</effort>
+    <prerequisite-task idref="t6" kind="SS"/>
+    <assignment idref="r2" units="0.799999952316284"/>
+  </task>
+  <critical-path root="-1" enabled="false" resources="false">
+    <color r="1" g="0.5" b="0.5"/>
+  </critical-path>
+</scenario>

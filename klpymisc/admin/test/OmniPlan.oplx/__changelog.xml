@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<changelog xmlns="http://www.omnigroup.com/namespace/OmniPlan/v2">
+  <version>2.1</version>
+  <task-change-set user="Kathleen Labrie" date="2014-12-05T23:59:43.906Z" timestamp="2014-12-05T23:59:43.906Z">
+    <change idref="t2" to="t-1" to-position="1" resolved="yes">
+      <change idref="t2" attribute="effort" type="real" from="28800" to="288000"/>
+      <change idref="t2" attribute="internalAssignments" type="string" from="" to="2 {80}"/>
+      <change idref="t2" attribute="internalPrerequisitesString" type="string" to="1FS"/>
+      <change idref="t2" attribute="title" type="string" to="Task 2"/>
+    </change>
+    <change idref="t3" to="t-1" to-position="2" resolved="yes">
+      <change idref="t3" attribute="effort" type="real" from="28800" to="288000"/>
+      <change idref="t3" attribute="internalAssignments" type="string" from="" to="3 {60}"/>
+      <change idref="t3" attribute="internalPrerequisitesString" type="string" to="2FS"/>
+      <change idref="t3" attribute="title" type="string" to="Task 3"/>
+    </change>
+    <change idref="t4" to="t-1" to-position="3" resolved="yes">
+      <change idref="t4" attribute="effort" type="real" from="28800" to="288000"/>
+      <change idref="t4" attribute="internalPrerequisitesString" type="string" to="3FS"/>
+      <change idref="t4" attribute="title" type="string" to="Task 4"/>
+    </change>
+    <change idref="t1" attribute="effort" type="real" from="28800" to="288000" resolved="yes"/>
+    <change idref="t1" attribute="internalAssignments" type="string" from="" to="1 {60}" resolved="yes"/>
+  </task-change-set>
+  <task-change-set user="Kathleen Labrie" date="2014-12-06T00:03:34.056Z" timestamp="2014-12-06T00:03:34.056Z">
+    <change idref="t2" attribute="internalPrerequisitesString" type="string" from="1FS" resolved="yes"/>
+  </task-change-set>
+  <task-change-set user="Kathleen Labrie" date="2014-12-06T01:38:03.884Z" timestamp="2014-12-06T01:38:03.884Z">
+    <change idref="t3" attribute="effort" type="real" from="288000" to="576000" resolved="yes"/>
+  </task-change-set>
+  <task-change-set user="Kathleen Labrie" date="2014-12-06T01:40:04.890Z" timestamp="2014-12-06T01:40:04.890Z">
+    <change idref="t1" attribute="internalAssignments" type="string" from="1 {60}" to="1 {60}; 4 {60}" resolved="yes"/>
+  </task-change-set>
+  <task-change-set user="Kathleen Labrie" date="2014-12-06T01:44:31.645Z" timestamp="2014-12-06T01:44:31.645Z">
+    <change idref="t1" attribute="internalAssignments" type="string" from="1 {60}; 4 {60}" to="1 {30}; 4 {60}" resolved="yes"/>
+  </task-change-set>
+  <task-change-set user="Kathleen Labrie" date="2014-12-06T01:46:07.596Z" timestamp="2014-12-06T01:46:07.596Z">
+    <change idref="t1" attribute="internalAssignments" type="string" from="1 {30}; 4 {60}" to="1 {60}; 4 {30}" resolved="yes"/>
+  </task-change-set>
+  <task-change-set user="Kathleen Labrie" date="2014-12-06T02:06:02.280Z" timestamp="2014-12-06T02:06:02.280Z">
+    <change idref="t6" to="t-1" to-position="4" resolved="yes">
+      <change idref="t6" attribute="effort" type="real" from="28800" to="288000"/>
+      <change idref="t6" attribute="internalAssignments" type="string" from="" to="2 {20}; 4 {60}"/>
+      <change idref="t6" attribute="internalPrerequisitesString" type="string" to="4SS"/>
+      <change idref="t6" attribute="title" type="string" to="Task 5"/>
+    </change>
+    <change idref="t7" to="t-1" to-position="5" resolved="yes">
+      <change idref="t7" attribute="effort" type="real" from="28800" to="288000"/>
+      <change idref="t7" attribute="internalAssignments" type="string" from="" to="2 {80}"/>
+      <change idref="t7" attribute="internalPrerequisitesString" type="string" to="6SS"/>
+      <change idref="t7" attribute="title" type="string" to="Task 6"/>
+    </change>
+    <change idref="t4" attribute="effort" type="real" from="288000" to="144000" resolved="yes"/>
+    <change idref="t4" attribute="internalAssignments" type="string" from="" to="2 {40}" resolved="yes"/>
+  </task-change-set>
+  <resource-change-set user="Kathleen Labrie" date="2014-12-05T23:59:43.905Z" timestamp="2014-12-05T23:59:43.905Z">
+    <change idref="r2" to="r-1" to-position="1" resolved="yes">
+      <change idref="r2" attribute="name" type="string" to="B"/>
+      <change idref="r2" attribute="unitsAvailable" type="real" from="1" to="0.7999999523162842"/>
+    </change>
+    <change idref="r3" to="r-1" to-position="2" resolved="yes">
+      <change idref="r3" attribute="name" type="string" to="C"/>
+      <change idref="r3" attribute="unitsAvailable" type="real" from="1" to="0.5999999642372131"/>
+    </change>
+    <change idref="r1" attribute="unitsAvailable" type="real" from="1" to="0.5999999642372131" resolved="yes"/>
+    <change idref="r1" attribute="name" type="string" from="Resource 1" to="A" resolved="yes"/>
+  </resource-change-set>
+  <resource-change-set user="Kathleen Labrie" date="2014-12-06T01:40:04.889Z" timestamp="2014-12-06T01:40:04.889Z">
+    <change idref="r4" to="r-1" to-position="3" resolved="yes">
+      <change idref="r4" attribute="name" type="string" to="D"/>
+      <change idref="r4" attribute="unitsAvailable" type="real" from="1" to="0.5999999642372131"/>
+    </change>
+  </resource-change-set>
+  <metadata-change-set user="Kathleen Labrie" date="2014-12-05T23:59:43.905Z" timestamp="2014-12-05T23:59:43.905Z">
+    <change idref="m1" attribute="fixedDate" type="date" from="2007-01-01T20:00:00.000Z" to="2014-12-05T18:00:00.000Z" resolved="yes"/>
+  </metadata-change-set>
+</changelog>

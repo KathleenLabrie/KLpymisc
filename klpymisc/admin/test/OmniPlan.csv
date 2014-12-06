@@ -1,0 +1,7 @@
+WBS Number,Title,Start,End,Time,Effort,%Done,Cost,Assigned,Planned Start,Start Variance,Planned End,End Variance,Constraint Start,Constraint End,Prerequisites,NoteContents,Priority,Resources Cost,Total Task Cost
+1,Task 1,12/5/14 8:00 AM,12/22/14 8:53 AM,2w 1d 53m 21s,2w,0%,,A {60% of 60%}; D {30% of 60%},,,,,,,,,0,,
+2,Task 2,12/5/14 8:00 AM,12/23/14 12:00 PM,2w 2d 4h,2w,0%,,B {80% of 80%},,,,,,,,,0,,
+3,Task 3,12/23/14 1:00 PM,2/6/15 3:40 PM,1mo 2w 3d 2h 40m 1s,1mo,0%,,C {60% of 60%},,,,,,,2,,0,,
+4,Task 4,2/6/15 3:40 PM,2/25/15 10:40 AM,2w 2d 4h 2s,1w,0%,,B {40% of 80%},,,,,,,3,,0,,
+5,Task 5,2/6/15 3:40 PM,2/25/15 10:40 AM,2w 2d 4h 1s,2w,0%,,B {20% of 80%}; D {60% of 60%},,,,,,,4SS,,0,,
+6,Task 6,2/6/15 3:40 PM,2/25/15 10:40 AM,2w 2d 4h 1s,2w,0%,,B {80% of 80%},,,,,,,5SS,,0,,
