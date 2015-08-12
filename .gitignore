@@ -58,3 +58,5 @@ target/
 .pydevproject
 .settings
 
+# PyCharm?
+.idea
