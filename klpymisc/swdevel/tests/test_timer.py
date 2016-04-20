@@ -79,8 +79,9 @@ class TestTimer(object):
         t.__enter__()
         t.__exit__(exception_type, exception_value, traceback)
         t.writelog('TEST', 'test.log')
-        fhdl = open('test.log', mode='r')
+        fhdl = open('test.log', mode='r', encoding='utf-8')
         line = fhdl.readlines()[0]
+        print(line)
         fhdl.close()
         os.remove('test.log')
 

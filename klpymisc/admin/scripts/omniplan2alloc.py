@@ -1,7 +1,10 @@
 #!/usr/bin/env python
 
+from __future__ import print_function
+
 import sys
 import argparse
+from io import open
 
 import csv
 import re
@@ -19,7 +22,8 @@ SHORT_DESCRIPTION = 'Calculate monthly resource allocation from CSV export \
 
 def load_records(inputfile):
     records = []
-    with open(inputfile, 'rb') as filehandle:
+    #with open(inputfile, 'rb') as filehandle:
+    with open(inputfile, encoding='utf-8') as filehandle:
         reader = csv.reader(filehandle)
         try:
             firstrow = True
@@ -145,7 +149,7 @@ def write_allocations(allocations, outputfile):
                 row.append('0.')
         alloc_rows.append(row)
 
-    with open(outputfile, 'wb') as filehandle:
+    with open(outputfile, mode='w', encoding='utf-8') as filehandle:
         writer = csv.writer(filehandle)
         writer.writerow(header)
         writer.writerows(alloc_rows)
@@ -291,7 +295,7 @@ def parse_args(command_line_args):
     args = parser.parse_args(command_line_args)
 
     if args.debug:
-        print args
+        print(args)
 
     return args
 
@@ -304,15 +308,15 @@ def main(argv=None):
     records = load_records(args.inputfile)
     if args.debug:
         for record in records:
-            print record.record['Assigned'], record.record['Effort']
+            print(record.record['Assigned'], record.record['Effort'])
 
     allocations = calculate_allocation(records)
     if args.debug:
         for resource in sorted(allocations.keys()):
-            print allocations[resource].resource
+            print(allocations[resource].resource)
             for month in allocations[resource].allocation:
-                print '   ', month.strftime("%B%Y"), \
-                             allocations[resource].allocation[month]
+                print('   ', month.strftime("%B%Y"), \
+                             allocations[resource].allocation[month])
 
     write_allocations(allocations, args.outputfile)
 

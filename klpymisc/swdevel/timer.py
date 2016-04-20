@@ -1,9 +1,12 @@
 """
 Time profiling tools.
 """
+from __future__ import print_function
+
 __author__ = 'Kathleen Labrie'
 
 import time
+from io import open
 
 # pylint: disable=too-few-public-methods
 
@@ -66,7 +69,7 @@ class Timer(object):
         self.end = time.time()
         self.secs = self.end - self.start
         if self.verbose:
-            print "elapse time: %f seconds" % self.secs
+            print("elapse time: %f seconds" % self.secs)
 
     def writelog(self, name, logname):
         """
@@ -88,7 +91,7 @@ class Timer(object):
         Examples
         --------
         """
-        fhdl = open(logname, mode='a')
+        fhdl = open(logname, mode='a', encoding='utf-8')
         fhdl.write("Elapse time for " + name + ": " + str(self.secs) +
                    " secs\n")
         fhdl.close()

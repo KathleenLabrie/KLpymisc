@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+from __future__ import print_function
+
 import sys
 import argparse
 
@@ -66,15 +68,15 @@ def main(argv=None):
         # the_date = datetime.strptime(record[' Start time'], \
         #                             "%b %d, %Y, %H:%M:%S %Z").date()
         duration = float(record['Duration in hours'])
-        if timecard[category].has_key(the_date):
+        if the_date in timecard[category]:
             timecard[category][the_date] += duration
         else:
             timecard[category][the_date] = duration
 
     for category in timecard.keys():
-        print category
+        print(category)
         for the_date in sorted(timecard[category].keys()):
-            print '   ', the_date, timecard[category][the_date]
+            print('   ', the_date, timecard[category][the_date])
 
 
 if __name__ == '__main__':
