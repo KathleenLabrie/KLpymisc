@@ -12,6 +12,7 @@ __author__ = 'Kathleen Labrie'
 
 import os
 from klpymisc.swdevel import timer
+from io import open
 
 # pylint: disable=invalid-name, no-self-use
 

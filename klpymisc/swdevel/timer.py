@@ -92,7 +92,8 @@ class Timer(object):
         --------
         """
         fhdl = open(logname, mode='a', encoding='utf-8')
-        fhdl.write("Elapse time for " + name + ": " + str(self.secs) +
-                   " secs\n")
+        fhdl.write(u"Elapse time for {}: {} secs\n".format(name, self.secs))
+        #fhdl.write("Elapse time for " + name + ": " + str(self.secs) +
+        #           " secs\n")
         fhdl.close()
 
