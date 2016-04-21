@@ -55,5 +55,9 @@ To extract the documentation and copy it somewhere useful, ::
 will copy the documentation to /your/preferred/path/reduxGemini.
 
 
+Dependencies
+============
 
-
+* python-dateutil
+* pytest
+* sphinx
