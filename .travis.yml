@@ -6,7 +6,11 @@ python:
 install: 
   - pip install -r requirements.txt
   - pip install pytest
+  - pip install coveralls
 # command to run tests
 script: 
   - python setup.py develop && py.test
+  - coverage run --source=KLpymisc setup.py test
+after_success:
+  - coveralls
 
