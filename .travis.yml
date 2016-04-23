@@ -6,10 +6,12 @@ python:
 install: 
   - pip install -r requirements.txt
   - pip install pytest pytest-cov
+  - pip install pylint
   - pip install coveralls
 # command to run tests
 script: 
   - python setup.py develop && py.test --cov=klpymisc
+  - pylint --rcfile=pylintrc klpymisc
 after_success:
   - coveralls
 
