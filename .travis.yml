@@ -12,7 +12,7 @@ install:
 script: 
   - python setup.py develop && py.test --cov=klpymisc
   - ./mylint klpymisc | tee tmp
-  - echo "if [[ `tail -2 tmp | head -1 | sed -e 's/[a-zA-Z ]*\([0-9]\.[0-9][0-9]\)\/[0-9]*.*/\1/'` < 9 ]]; then exit 1; fi" > testscore.sh
+  - echo "if [[ `tail -2 tmp | head -1 | sed -e 's/[a-zA-Z ]*\([0-9]\.[0-9][0-9]\)\/[0-9]*.*/\1/'` < 7 ]]; then exit 1; fi" > testscore.sh
   - chmod 0755 ./testscore.sh && ./testscore.sh
   - rm ./tmp ./testscore.sh
 after_success:
