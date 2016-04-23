@@ -11,7 +11,7 @@ install:
 # command to run tests
 script: 
   - python setup.py develop && py.test --cov=klpymisc
-  - pylint --rcfile=pylintrc klpymisc
+  - ./mylint klpymisc
 after_success:
   - coveralls
 
