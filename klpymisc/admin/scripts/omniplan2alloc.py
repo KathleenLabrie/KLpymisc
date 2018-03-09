@@ -240,10 +240,10 @@ def parse_assigned(assigned_string):
     for assignee in assigned_resources:
         (name, fracstring) = assignee.split('{', 1)
         name = name.rstrip().lstrip()
-        f_of_f = re.search('(\d+)\% of (\d+)\%', fracstring).groups()
-        # the omniplan string says eg. 80% of 80% but it means 80% FTE
-        #  not 80% of 0.8 FTE, or 64%.  The proof is that one cannot say
-        #  in omniplan to assign 100% of 80%.
+        f_of_f = re.search('(\d+)\% out of (\d+)\%', fracstring).groups()
+        # the omniplan string says eg. 80% out of 80% but it means 80% FTE
+        #  not 80% out of 0.8 FTE, or 64%.  The proof is that one cannot say
+        #  in omniplan to assign 100% out of 80%.
         fraction = float(f_of_f[0]) / 10000.
         total_fraction += fraction
         resources.append([name, fraction])
@@ -269,8 +269,11 @@ def parse_effort(effort_string):
     return effort
 
 def parse_date(date_string):
-    date_only = date_string.split()[0]
+    print(date_string)
+    date_only = date_string.split(',')[0]
+    print(date_only)
     the_date = datetime.strptime(date_only, "%m/%d/%y").date()
+    print(the_date)
     return the_date
 
 #------------------------------------------------------------------
