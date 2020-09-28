@@ -39,7 +39,7 @@ def main(argv=None):
 
     categories = []
     for record in records:
-        category = record[' Category']
+        category = record[' Tag']
         if category not in categories:
             categories.append(category)
 
@@ -63,7 +63,7 @@ def main(argv=None):
     #            }
 
     for record in records:
-        category = record[' Category']
+        category = record[' Tag']
         the_date = parser.parse(record[' Start time']).date()
         # the_date = datetime.strptime(record[' Start time'], \
         #                             "%b %d, %Y, %H:%M:%S %Z").date()
