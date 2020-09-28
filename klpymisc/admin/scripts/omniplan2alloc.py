@@ -20,6 +20,16 @@ SHORT_DESCRIPTION = 'Calculate monthly resource allocation from CSV export \
                      from OmniPlan'
 
 
+# If ever want to bother to make it per week number:
+#    datetime.date(2018,2,6).isocalendar()[1]
+# will return the week of the year the date falls in.
+#
+# It appears to take care of the year change.
+#    datetime.date(2018,12,31).isocalendar()[1]
+#    1
+#    datetime.date(2018,12,30).isocalendar()[1]
+#    52
+
 def load_records(inputfile):
     records = []
     #with open(inputfile, 'rb') as filehandle:
@@ -57,6 +67,7 @@ def calculate_allocation(records):
             effort_hours = parse_effort(record.record['Effort'])
             start_date = parse_date(record.record['Start'])
             end_date = parse_date(record.record['End'])
+
 
             # Now, calculate the effort per month
             if start_date.month == end_date.month:
@@ -269,11 +280,11 @@ def parse_effort(effort_string):
     return effort
 
 def parse_date(date_string):
-    print(date_string)
+    #print(date_string)
     date_only = date_string.split(',')[0]
-    print(date_only)
+    #print(date_only)
     the_date = datetime.strptime(date_only, "%m/%d/%y").date()
-    print(the_date)
+    #print(the_date)
     return the_date
 
 #------------------------------------------------------------------
