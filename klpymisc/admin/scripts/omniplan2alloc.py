@@ -14,7 +14,7 @@ from dateutil import rrule
 
 VERSION = '1.1.0'
 
-COMPAT = 'CSV from OmniPlan 2.3.5'
+COMPAT = 'CSV from OmniPlan 3.13'
 
 SHORT_DESCRIPTION = 'Calculate monthly resource allocation from CSV export \
                      from OmniPlan'
@@ -50,6 +50,9 @@ def load_records(inputfile):
 def calculate_allocation(records):
     allocations = {}  # resource, AllocRecord
     for record in records:
+        if record.record['Completed'] == '100%':
+            continue
+
         if len(record.record['Assigned']):
             # Parse the values obtained from the CSV.
             resources = parse_assigned(record.record['Assigned'])
@@ -68,21 +71,35 @@ def calculate_allocation(records):
             start_date = parse_date(record.record['Start'])
             end_date = parse_date(record.record['End'])
 
+            # Now, calculate the effort left per month
+            # Key here is "left".  If a task is already completed, the
+            # effort looking ahead is clearly no longer needed.  It shouldn't
+            # be added to the tally.
 
-            # Now, calculate the effort per month
+            completion = percent_to_float(record.record['Completed'])
+
             if start_date.month == end_date.month:
                 # Effort contained within one month.
                 month = date(start_date.year, start_date.month, 1)
                 for (name, frac) in resources:
-                    allocations[name].add_effort(month, effort_hours * frac)
+                    effort_left = (1 - completion) * effort_hours * frac
+                    allocations[name].add_effort(month, effort_left)
             else:
-                # Effort spread over multiple months
+                # Effort spreaded over multiple months
+                # All 'number of days' are business days.
+                #
+                # Special attention to first and last month where the task
+                # likely starts or ends in the middle of the month.
+                #
+                # Special attention to the month when the current completion
+                # level ends up.
 
-                # Effort in partial months (first and last)
-                # (All 'number of days' are business days.)
                 ndays = get_business_days(start_date, end_date)
                 effort_per_day = effort_hours / ndays
+                hours_completed = completion * effort_hours
 
+                # About the first month
+                first_month = date(start_date.year, start_date.month, 1)
                 last_date_in_first_month = date(
                                     start_date.year,
                                     start_date.month,
@@ -90,39 +107,150 @@ def calculate_allocation(records):
                                         start_date.month)[1]
                                     )
                 days_in_first = get_business_days(start_date,
-                                                  last_date_in_first_month
-                                                  )
+                                                  last_date_in_first_month)
 
-                first_date_in_last_month = date(end_date.year,
-                                                end_date.month,
-                                                1
-                                                )
-                days_in_last = get_business_days(first_date_in_last_month,
-                                                 end_date
-                                                 )
-
-                first_month = date(start_date.year, start_date.month, 1)
+                # About the last month
                 last_month = date(end_date.year, end_date.month, 1)
-                for (name, frac) in resources:
-                    allocations[name].add_effort(first_month,
-                                     effort_per_day * days_in_first * frac)
-                    allocations[name].add_effort(last_month,
-                                     effort_per_day * days_in_last * frac)
+                first_date_in_last_month = date(end_date.year,
+                                                end_date.month, 1)
+                days_in_last = get_business_days(first_date_in_last_month,
+                                                 end_date)
 
-                # For the months in between...
+                # About the months in between
                 list_of_months = monthly(start_date, end_date,
                                          include_limits=False)
+                days_in_months = {}
                 for month in list_of_months:
                     days = get_business_days(
-                                    date(month.year, month.month, 1),
-                                    date(month.year, month.month,
-                                         calendar.monthrange(month.year,
-                                                             month.month)[1]
-                                         )
-                                            )
-                    for (name, frac) in resources:
-                        allocations[name].add_effort(month,
-                                                effort_per_day * days * frac)
+                        date(month.year, month.month, 1),
+                        date(month.year, month.month,
+                             calendar.monthrange(month.year,
+                                                 month.month)[1]
+                             )
+                    )
+                    days_in_months[month] = days
+
+                # Identify crossover month, when current completion level falls.
+                # Every month before that should have zero effort
+                # Every month after than should have their days*effort_per_day.
+
+                the_month = current_completion_month(hours_completed/effort_per_day,
+                                         first_month, days_in_first,
+                                         last_month, days_in_last,
+                                         days_in_months)
+
+                full_list_of_months = monthly(start_date, end_date,
+                                              include_limits=True)
+                crossover = False
+                days_sum = 0
+                for month in full_list_of_months:
+                    if month == first_month:
+                        days_sum += days_in_first
+                        if the_month == first_month:
+                            # set effort left for first month
+                            hours_left = (effort_per_day * days_in_first) - \
+                                         hours_completed
+                            crossover = True
+                        else:
+                            # work for this month is done.
+                            hours_left = 0
+
+                        for (name, frac) in resources:
+                            allocations[name].add_effort(first_month,
+                                                         hours_left * frac
+                                                         )
+                    elif month == last_month:
+                        if the_month == last_month:
+                            # effort left for last month
+                            hours_left = effort_hours - hours_completed
+                            crossover = True
+                        else:
+                            # full effort for last month
+                            hours_left = effort_per_day * days_in_last
+
+                        for (name, frac) in resources:
+                            allocations[name].add_effort(last_month,
+                                                         hours_left * frac)
+                    else:
+                        days_sum += days_in_months[month]
+                        if month == the_month:
+                            # set effort left of this month
+                            hours_left = (days_sum * effort_per_day) - \
+                                         hours_completed
+                            crossover = True
+                        elif crossover:
+                            # full effort for month
+                            hours_left = effort_per_day * days_in_months[month]
+                        else:
+                            # work for this month is done.
+                            hours_left = 0
+
+                        for (name, frac) in resources:
+                            allocations[name].add_effort(month,
+                                                         hours_left * frac)
+
+                if not crossover:
+                    print("There's a problem.")
+                    raise
+
+
+
+
+
+            # Now, calculate the effort per month
+            # if start_date.month == end_date.month:
+            #     # Effort contained within one month.
+            #     month = date(start_date.year, start_date.month, 1)
+            #     for (name, frac) in resources:
+            #         allocations[name].add_effort(month, effort_hours * frac)
+            # else:
+            #     # Effort spread over multiple months
+            #
+            #     # Effort in partial months (first and last)
+            #     # (All 'number of days' are business days.)
+            #     ndays = get_business_days(start_date, end_date)
+            #     effort_per_day = effort_hours / ndays
+            #
+            #     last_date_in_first_month = date(
+            #                         start_date.year,
+            #                         start_date.month,
+            #                         calendar.monthrange(start_date.year,
+            #                             start_date.month)[1]
+            #                         )
+            #     days_in_first = get_business_days(start_date,
+            #                                       last_date_in_first_month
+            #                                       )
+            #
+            #     first_date_in_last_month = date(end_date.year,
+            #                                     end_date.month,
+            #                                     1
+            #                                     )
+            #     days_in_last = get_business_days(first_date_in_last_month,
+            #                                      end_date
+            #                                      )
+
+                # # first_month = date(start_date.year, start_date.month, 1)
+                # # last_month = date(end_date.year, end_date.month, 1)
+                # for (name, frac) in resources:
+                #     allocations[name].add_effort(first_month,
+                #                      effort_per_day * days_in_first * frac)
+                #     allocations[name].add_effort(last_month,
+                #                      effort_per_day * days_in_last * frac)
+                #
+                # # For the months in between...
+                # list_of_months = monthly(start_date, end_date,
+                #                          include_limits=False)
+                # for month in list_of_months:
+                #     days = get_business_days(
+                #                     date(month.year, month.month, 1),
+                #                     date(month.year, month.month,
+                #                          calendar.monthrange(month.year,
+                #                                              month.month)[1]
+                #                          )
+                #                             )
+                #     for (name, frac) in resources:
+                #         allocations[name].add_effort(month,
+                #                                 effort_per_day * days * frac)
 
         else:
             # If the task is not assigned, skip.  eg. milestones, group tasks.
@@ -226,6 +354,7 @@ def monthly(start, end, include_limits=True):
     else:
         day = start + one_month
         day = date(day.year, day.month, 1)
+        one_month = timedelta(calendar.monthrange(day.year, day.month)[1])
 
     list_of_months = []
 
@@ -286,6 +415,33 @@ def parse_date(date_string):
     the_date = datetime.strptime(date_only, "%m/%d/%y").date()
     #print(the_date)
     return the_date
+
+def percent_to_float(s):
+    return float(s.strip('%'))/100.
+
+def current_completion_month(days_completed,
+                             first_month, days_in_first,
+                             last_month, days_in_last,
+                             days_in_months):
+
+    total_days = days_in_first + days_in_last
+    for month in days_in_months.keys():
+        total_days += days_in_months[month]
+
+    the_month = None
+    if days_completed < days_in_first:
+        the_month = first_month
+    elif total_days - days_completed <= days_in_last:
+        the_month = last_month
+    else:
+        days_sum = days_in_first
+        for month in days_in_months.keys():
+            days_sum += days_in_months[month]
+            if days_completed < days_sum:
+                the_month = month
+                break
+
+    return the_month
 
 #------------------------------------------------------------------
 # Command-line handling
