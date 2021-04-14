@@ -392,14 +392,20 @@ def parse_assigned(assigned_string):
     resources = []
     total_fraction = 0.
     for assignee in assigned_resources:
-        (name, fracstring) = assignee.split('{', 1)
-        name = name.rstrip().lstrip()
-        f_of_f = re.search('(\d+)\% out of (\d+)\%', fracstring).groups()
-        # the omniplan string says eg. 80% out of 80% but it means 80% FTE
-        #  not 80% out of 0.8 FTE, or 64%.  The proof is that one cannot say
-        #  in omniplan to assign 100% out of 80%.
-        fraction = float(f_of_f[0]) / 10000.
+        if '{' in assignee:
+            (name, fracstring) = assignee.split('{', 1)
+            f_of_f = re.search('(\d+)\% out of (\d+)\%', fracstring).groups()
+            # the omniplan string says eg. 80% out of 80% but it means 80% FTE
+            #  not 80% out of 0.8 FTE, or 64%.  The proof is that one cannot say
+            #  in omniplan to assign 100% out of 80%.
+            #
+            # KL: why am I dividing by 10000?
+            fraction = float(f_of_f[0]) / 10000.
+        else:
+            name = assignee
+            fraction = float(100.) / 10000.
         total_fraction += fraction
+        name = name.rstrip().lstrip()
         resources.append([name, fraction])
     # fraction is global, but we want fraction of this task only
     for resource in resources:
