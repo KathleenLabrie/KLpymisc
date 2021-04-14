@@ -172,6 +172,7 @@ def calculate_allocation(records):
                             allocations[name].add_effort(last_month,
                                                          hours_left * frac)
                     else:
+                        print("KLDEBUG: ", days_in_months)
                         days_sum += days_in_months[month]
                         if month == the_month:
                             # set effort left of this month
@@ -348,7 +349,20 @@ def get_business_days(start_date, end_date):
     return nbizdays
 
 def monthly(start, end, include_limits=True):
-    one_month = timedelta(calendar.monthrange(start.year, start.month)[1])
+    # Using the start month length works unless start day + month length
+    # skips the next month entirely.  For example, March 31 + 31 days, ends
+    # up being May 1st, skipping April.  I think that a way around that is to
+    # use the length of start month if date < 15, and length of next month if
+    # date > 15.
+
+    if start.day <= 15:
+        one_month = timedelta(calendar.monthrange(start.year, start.month)[1])
+    else:
+        if start.month != 12:
+            one_month = timedelta(calendar.monthrange(start.year, start.month+1)[1])
+        else:
+            one_month = timedelta(
+                calendar.monthrange(start.year+1, 1)[1])
     if include_limits:
         day = date(start.year, start.month, 1)
     else:
