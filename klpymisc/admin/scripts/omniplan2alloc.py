@@ -172,7 +172,6 @@ def calculate_allocation(records):
                             allocations[name].add_effort(last_month,
                                                          hours_left * frac)
                     else:
-                        print("KLDEBUG: ", days_in_months)
                         days_sum += days_in_months[month]
                         if month == the_month:
                             # set effort left of this month
@@ -193,65 +192,6 @@ def calculate_allocation(records):
                 if not crossover:
                     print("There's a problem.")
                     raise
-
-
-
-
-
-            # Now, calculate the effort per month
-            # if start_date.month == end_date.month:
-            #     # Effort contained within one month.
-            #     month = date(start_date.year, start_date.month, 1)
-            #     for (name, frac) in resources:
-            #         allocations[name].add_effort(month, effort_hours * frac)
-            # else:
-            #     # Effort spread over multiple months
-            #
-            #     # Effort in partial months (first and last)
-            #     # (All 'number of days' are business days.)
-            #     ndays = get_business_days(start_date, end_date)
-            #     effort_per_day = effort_hours / ndays
-            #
-            #     last_date_in_first_month = date(
-            #                         start_date.year,
-            #                         start_date.month,
-            #                         calendar.monthrange(start_date.year,
-            #                             start_date.month)[1]
-            #                         )
-            #     days_in_first = get_business_days(start_date,
-            #                                       last_date_in_first_month
-            #                                       )
-            #
-            #     first_date_in_last_month = date(end_date.year,
-            #                                     end_date.month,
-            #                                     1
-            #                                     )
-            #     days_in_last = get_business_days(first_date_in_last_month,
-            #                                      end_date
-            #                                      )
-
-                # # first_month = date(start_date.year, start_date.month, 1)
-                # # last_month = date(end_date.year, end_date.month, 1)
-                # for (name, frac) in resources:
-                #     allocations[name].add_effort(first_month,
-                #                      effort_per_day * days_in_first * frac)
-                #     allocations[name].add_effort(last_month,
-                #                      effort_per_day * days_in_last * frac)
-                #
-                # # For the months in between...
-                # list_of_months = monthly(start_date, end_date,
-                #                          include_limits=False)
-                # for month in list_of_months:
-                #     days = get_business_days(
-                #                     date(month.year, month.month, 1),
-                #                     date(month.year, month.month,
-                #                          calendar.monthrange(month.year,
-                #                                              month.month)[1]
-                #                          )
-                #                             )
-                #     for (name, frac) in resources:
-                #         allocations[name].add_effort(month,
-                #                                 effort_per_day * days * frac)
 
         else:
             # If the task is not assigned, skip.  eg. milestones, group tasks.
@@ -399,7 +339,7 @@ def parse_assigned(assigned_string):
             #  not 80% out of 0.8 FTE, or 64%.  The proof is that one cannot say
             #  in omniplan to assign 100% out of 80%.
             #
-            # KL: why am I dividing by 10000?
+            # TODO why am I dividing by 10000?
             fraction = float(f_of_f[0]) / 10000.
         else:
             name = assignee
