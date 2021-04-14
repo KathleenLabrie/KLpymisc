@@ -78,7 +78,8 @@ def calculate_allocation(records):
 
             completion = percent_to_float(record.record['Completed'])
 
-            if start_date.month == end_date.month:
+            if (start_date.month == end_date.month) and \
+                    (start_date.year == end_date.year):
                 # Effort contained within one month.
                 month = date(start_date.year, start_date.month, 1)
                 for (name, frac) in resources:
